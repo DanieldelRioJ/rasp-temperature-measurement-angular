@@ -1,0 +1,3 @@
+@for (device of devices; track device) {
+    <p>{{ device.id }} - {{ device.last_date * 1000 | date: 'medium' }} - {{ device.name }}</p>
+}

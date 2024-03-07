@@ -1,0 +1,16 @@
+<div [class.bg-green-600]="type === 'success'" [class.bg-red-700]="type === 'error'"
+     class="shadow rounded p-4 flex flex-col gap-2">
+    <div class="flex gap-2">
+        @if (type === 'success') {
+            <mat-icon class="text-2xl">done</mat-icon>
+        } @else {
+            <mat-icon class="text-2xl">warning_icon</mat-icon>
+        }
+        <span class="text-xl"> {{ title }}</span>
+
+    </div>
+
+    @if (body) {
+        <span>{{ body }}</span>
+    }
+</div>
