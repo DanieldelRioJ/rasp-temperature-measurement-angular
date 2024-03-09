@@ -1,0 +1,15 @@
+<div class="flex gap-2 flex-wrap justify-center">
+    @for (device of devices(); track device) {
+        <div class="flex flex-shrink flex-col bg-green-500 p-5 text-white">
+            <p class="text-3xl text-center">{{ device.name }} </p>
+            <span class="flex justify-between text-4xl gap-4"><span class="text-xl">Actual:</span>
+                25ºC</span>
+            <span class="flex justify-between text-4xl gap-4"><span class="text-xl">Max:</span>
+                67ºC</span>
+            <span class="flex justify-between text-4xl gap-4"><span class="text-xl">Min:</span>
+                12ºC</span>
+        </div>
+    } @empty {
+        <p>No hay ningún sensor registrado</p>
+    }
+</div>

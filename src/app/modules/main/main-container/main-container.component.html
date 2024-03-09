@@ -4,11 +4,13 @@
     </mat-toolbar-row>
 </mat-toolbar>
 <main class="p-10">
+    <div class="flex justify-end">
+        <button mat-flat-button color="primary" (click)="addSensor()">
+            <mat-icon>add</mat-icon>
+            Añadir sensor
+        </button>
+    </div>
 
-    <button mat-flat-button color="primary" (click)="addSensor()">
-        <mat-icon>add</mat-icon>
-        Añadir sensor
-    </button>
-    <app-sensor-data></app-sensor-data>
+    <app-sensor-data [reload$]="reload$"></app-sensor-data>
 </main>
 

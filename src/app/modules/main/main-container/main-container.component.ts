@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddSensorComponent } from './add-sensor/add-sensor.component';
 import { SensorDataComponent } from './sensor-data/sensor-data.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter } from 'rxjs';
+import { filter, Subject } from 'rxjs';
 
 @Component({
     selector: 'app-main-container',
@@ -22,6 +22,7 @@ import { filter } from 'rxjs';
 })
 export class MainContainerComponent {
     private _destroyRef = inject(DestroyRef);
+    reload$ = new Subject<void>();
 
     constructor(private readonly _matDialog: MatDialog) {}
 
@@ -35,6 +36,8 @@ export class MainContainerComponent {
                 filter((result) => result != null),
                 takeUntilDestroyed(this._destroyRef),
             )
-            .subscribe();
+            .subscribe(() => {
+                this.reload$.next();
+            });
     }
 }
