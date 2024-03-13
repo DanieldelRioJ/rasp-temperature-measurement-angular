@@ -31,7 +31,7 @@ export class NotificationService {
         titleText: string,
         bodyText: string | null,
         type: string,
-        duration = 30000,
+        duration = 3000,
     ): void {
         this._notifify(titleText, bodyText, type, duration, [
             'p-px',

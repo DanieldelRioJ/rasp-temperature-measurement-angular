@@ -1,8 +1,8 @@
-import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { RegisteredDevicesService } from '../../../../http/devices/registered-devices.service';
 import { RegisteredSensor } from '../../../../shared/models/registered-sensor.model';
-import { DatePipe } from '@angular/common';
-import { Observable, startWith } from 'rxjs';
+import { DatePipe, NgIf } from '@angular/common';
+import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SummaryDataComponent } from './summary-data/summary-data.component';
 import { DetailedDataComponent } from './detailed-data/detailed-data.component';
@@ -10,6 +10,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SensorDataFormService } from './sensor-data-form.service';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { AddSensorComponent } from '../add-sensor/add-sensor.component';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
     selector: 'app-sensor-data',
@@ -21,12 +26,14 @@ import { SensorDataFormService } from './sensor-data-form.service';
         MatFormFieldModule,
         MatDatepickerModule,
         ReactiveFormsModule,
+        MatButton,
+        MatIcon,
+        NgIf,
     ],
     providers: [SensorDataFormService],
     templateUrl: './sensor-data.component.html',
 })
-export class SensorDataComponent implements OnInit {
-    @Input() reload$?: Observable<void>;
+export class SensorDataComponent {
     devices: RegisteredSensor[] = [];
     range = this.sensorDataFormService.range;
     private _destroyRef = inject(DestroyRef);
@@ -34,12 +41,25 @@ export class SensorDataComponent implements OnInit {
     constructor(
         private readonly _registeredDevicesService: RegisteredDevicesService,
         public readonly sensorDataFormService: SensorDataFormService,
-    ) {}
+        public readonly authService: AuthService,
+        private readonly _matDialog: MatDialog,
+    ) {
+        this.getData();
+    }
 
-    ngOnInit(): void {
-        this.reload$
-            ?.pipe(startWith(null), takeUntilDestroyed(this._destroyRef))
-            .subscribe(() => this.getData());
+    addSensor() {
+        this._matDialog
+            .open(AddSensorComponent, {
+                width: '400px',
+            })
+            .afterOpened()
+            .pipe(
+                filter((result) => result != null),
+                takeUntilDestroyed(this._destroyRef),
+            )
+            .subscribe(() => {
+                this.getData();
+            });
     }
 
     getData() {

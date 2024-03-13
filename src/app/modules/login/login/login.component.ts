@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
+    MatError,
     MatFormField,
     MatLabel,
     MatPrefix,
@@ -16,6 +17,9 @@ import {
     Validators,
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NotificationService } from '../../../shared/notification/notification.service';
+import { FormErrorDirective } from '../../../shared/form-error/form-error.directive';
 
 @Component({
     selector: 'app-login',
@@ -29,6 +33,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
         MatPrefix,
         RouterLink,
         ReactiveFormsModule,
+        FormErrorDirective,
+        MatError,
     ],
     templateUrl: './login.component.html',
 })
@@ -37,6 +43,7 @@ export class LoginComponent {
         email: new FormControl<string>('', [
             Validators.required,
             Validators.minLength(1),
+            Validators.email,
         ]),
         password: new FormControl<string>('', [
             Validators.required,
@@ -50,6 +57,7 @@ export class LoginComponent {
         private readonly _loginService: LoginService,
         private readonly _formBuilder: FormBuilder,
         private readonly _router: Router,
+        private readonly _notificationService: NotificationService,
     ) {}
 
     login() {
@@ -57,8 +65,25 @@ export class LoginComponent {
         this._loginService
             .login(loginValue.email!, loginValue.password!)
             .pipe(takeUntilDestroyed(this._destroyRef))
-            .subscribe(() => {
-                this._router.navigateByUrl('/');
+            .subscribe({
+                next: () => {
+                    this._router.navigateByUrl('/');
+                },
+                error: (error: HttpErrorResponse) => {
+                    if (error.status === 404) {
+                        this._notificationService.send(
+                            'Usuario o contraseña incorrectos',
+                            null,
+                            'error',
+                        );
+                    } else if (error.status === 400) {
+                        this._notificationService.send(
+                            'Formato incorrecto',
+                            null,
+                            'error',
+                        );
+                    }
+                },
             });
     }
 }

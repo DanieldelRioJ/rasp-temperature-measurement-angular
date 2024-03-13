@@ -1,12 +1,11 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
-import { AddSensorComponent } from './add-sensor/add-sensor.component';
 import { SensorDataComponent } from './sensor-data/sensor-data.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, Subject } from 'rxjs';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-main-container',
@@ -17,27 +16,15 @@ import { filter, Subject } from 'rxjs';
         MatButton,
         MatIcon,
         SensorDataComponent,
+        RouterLink,
+        MatIconButton,
+        MatMenuTrigger,
+        MatMenu,
+        MatMenuItem,
+        RouterOutlet,
     ],
     templateUrl: './main-container.component.html',
 })
 export class MainContainerComponent {
-    private _destroyRef = inject(DestroyRef);
-    reload$ = new Subject<void>();
-
-    constructor(private readonly _matDialog: MatDialog) {}
-
-    addSensor() {
-        this._matDialog
-            .open(AddSensorComponent, {
-                width: '400px',
-            })
-            .afterOpened()
-            .pipe(
-                filter((result) => result != null),
-                takeUntilDestroyed(this._destroyRef),
-            )
-            .subscribe(() => {
-                this.reload$.next();
-            });
-    }
+    constructor(public readonly authService: AuthService) {}
 }

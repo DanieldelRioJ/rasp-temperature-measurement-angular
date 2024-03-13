@@ -1,12 +1,26 @@
 <ng-container *ngIf="device() as deviceObj">
     <div [class.bg-green-500]="deviceObj.last_temperature > 60" [class.bg-red-500]="deviceObj.last_temperature < 60"
-         class="flex flex-shrink flex-col p-5 text-white">
+         class="flex flex-shrink flex-col p-5 text-white rounded">
         <div class="flex justify-between items-baseline gap-4">
-            <p class="pb-0 text-3xl text-center">{{ deviceObj.name }} </p>
+            <p class="pb-0 text-3xl text-center">
+                {{ deviceObj.name }}
+            </p>
             <span
                 class="block p-3 rounded-full border border-black" style="box-shadow: 0px 0px 5px black"
                 [class.bg-green-400]="deviceObj.is_online"
+                [class.bg-red-400]="!deviceObj.is_online"
                 [matTooltip]="deviceObj.is_online ? 'Online': 'Desconectado'"></span>
+
+            @if (authService.user()?.role === 'admin') {
+                <div>
+                    <button mat-icon-button matTooltip="Editar">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Eliminar">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            }
         </div>
         <span class="flex justify-between text-4xl gap-4"><span class="text-xl">Actual:</span>
             {{ deviceObj.last_temperature | number: '1.0-2':'es' }}ºC</span>

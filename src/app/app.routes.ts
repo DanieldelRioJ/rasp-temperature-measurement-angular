@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
+import { canActivateGuard } from './core/can-activate.guard';
 
 export const routes: Routes = [
     {
         path: '',
         loadChildren: () =>
             import('./modules/main/main.routes').then((m) => m.MAIN_ROUTES),
+        canActivate: [canActivateGuard],
     },
     {
         path: 'login',

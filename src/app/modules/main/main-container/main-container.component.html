@@ -1,16 +1,26 @@
 <mat-toolbar color="primary">
     <mat-toolbar-row>
-        <span>Temperatura Rasp</span>
+        <span class="cursor-pointer" routerLink="/">Temperatura Rasp</span>
+        <span style="flex: 1 1 auto;"></span>
+        <div>
+            <button mat-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                {{ authService.user()?.email }}
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item routerLink="/configuration">
+                    <mat-icon>build</mat-icon>
+                    <span>Ajustes</span>
+                </button>
+                <button mat-menu-item (click)="this.authService.logout()">
+                    <mat-icon color="warn">power_settings_new</mat-icon>
+                    <span class="text-red-500">Cerrar sesión</span>
+                </button>
+            </mat-menu>
+        </div>
     </mat-toolbar-row>
 </mat-toolbar>
 <main class="p-10">
-    <div class="flex justify-end">
-        <button mat-flat-button color="primary" (click)="addSensor()">
-            <mat-icon>add</mat-icon>
-            Añadir sensor
-        </button>
-    </div>
-
-    <app-sensor-data [reload$]="reload$"></app-sensor-data>
+    <router-outlet></router-outlet>
 </main>
 

@@ -1,0 +1,12 @@
+<button mat-button routerLink="/">
+    <mat-icon>arrow_left</mat-icon>
+    Página principal
+</button>
+<p class="text-2xl text-center">Configuración</p>
+<ng-container *ngIf="authService.user() as user">
+    @if (user.role === 'admin') {
+        <app-raspberry-configuration></app-raspberry-configuration>
+        <app-manage-users></app-manage-users>
+    }
+    <app-user-configuration></app-user-configuration>
+</ng-container>

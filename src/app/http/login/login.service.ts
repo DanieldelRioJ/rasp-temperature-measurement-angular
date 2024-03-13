@@ -19,7 +19,7 @@ export class LoginService {
             .post<LoginResponse>(`${backUrl}/login`, { email, password })
             .pipe(
                 tap((response) => {
-                    this._authService.user = response.data;
+                    this._authService.user.set(response.data);
                     this._authService.token = response.token;
                 }),
             );
@@ -32,11 +32,19 @@ export class LoginService {
     }
 
     changePassword(email: string, recoveryToken: string, newPassword: string) {
-        return this._httpClient.post(`${backUrl}/change-password`, {
-            email,
-            recovery_token: recoveryToken,
-            new_password: newPassword,
-        });
+        return this._httpClient
+            .post<LoginResponse>(`${backUrl}/change-password`, {
+                email,
+                new_email: email,
+                recovery_token: recoveryToken,
+                new_password: newPassword,
+            })
+            .pipe(
+                tap((response) => {
+                    this._authService.user.set(response.data);
+                    this._authService.token = response.token;
+                }),
+            );
     }
 }
 

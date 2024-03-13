@@ -1,5 +1,5 @@
 import { ApplicationConfig, LOCALE_ID } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -10,16 +10,25 @@ import {
 } from './core/interceptors/auth.interceptor';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { NotificationService } from './shared/notification/notification.service';
 
 registerLocaleData(localeEs);
 
 export const appConfig: ApplicationConfig = {
     providers: [
+        NotificationService,
         { provide: LOCALE_ID, useValue: 'es-ES' },
-        provideRouter(routes),
+        provideRouter(routes, withComponentInputBinding()),
         provideAnimationsAsync(),
         provideHttpClient(
             withInterceptors([authRequiredInterceptor, setTokenInterceptor]),
         ),
+        {
+            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+            useValue: {
+                subscriptSizing: 'dynamic',
+            },
+        },
     ],
 };
