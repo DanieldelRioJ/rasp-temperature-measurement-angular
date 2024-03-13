@@ -1,1 +1,19 @@
-<p>manage-users works!</p>
+<div class="w-fit flex items-center gap-4 flex-wrap" [formGroup]="inviteForm">
+    <h1 class="text-center">Gestión de usuarios</h1>
+    <mat-form-field>
+        <mat-label>Email nuevo usuario</mat-label>
+        <input type="text" matInput formControlName="email">
+        <mat-error *appFormError="let error from 'email'">{{ error }}</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Rol</mat-label>
+        <mat-select formControlName="role">
+            <mat-option value="user">Usuario</mat-option>
+            <mat-option value="admin">Admin</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-flat-button color="primary" [disabled]="inviteForm.invalid"
+            (click)="invite()">
+        Invitar
+    </button>
+</div>
