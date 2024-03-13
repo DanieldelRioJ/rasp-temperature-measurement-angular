@@ -1,1 +1,34 @@
-<p>raspberry-configuration works!</p>
+<div class="flex flex-col gap-8">
+    <div class="w-fit flex items-center gap-4 flex-wrap" [formGroup]="raspberryConfigurationForm">
+        <h1 class="text-center">Cambiar nombre instalación</h1>
+        <mat-form-field class="w-72">
+            <mat-label>Nombre de la instalación</mat-label>
+            <input type="text" matInput formControlName="name">
+            <mat-error *appFormError="let error from 'name'">{{ error }}</mat-error>
+        </mat-form-field>
+        <button mat-flat-button color="primary" [disabled]="raspberryConfigurationForm.invalid"
+                (click)="changeAppName()">
+            Cambiar nombre
+        </button>
+    </div>
+    <div class="w-fit flex items-center gap-4 flex-wrap" [formGroup]="raspberryConfigurationForm">
+        <h1 class="text-center">Lista de emails de notificación</h1>
+        <mat-form-field class="example-form-field">
+            <mat-label>Video keywords</mat-label>
+            <mat-chip-grid #chipGrid aria-label="Enter keywords">
+                @for (keyword of emails; track keyword) {
+                    <mat-chip-row (removed)="removeEmail(keyword)">
+                        {{ keyword }}
+                        <button matChipRemove aria-label="'remove ' + keyword">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
+                }
+            </mat-chip-grid>
+            <input placeholder="Nuevo email"
+                   [matChipInputFor]="chipGrid"
+                   (matChipInputTokenEnd)="addEmail($event)" [formControl]="formControl"/>
+        </mat-form-field>
+    </div>
+</div>
+

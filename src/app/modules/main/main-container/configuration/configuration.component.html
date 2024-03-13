@@ -3,10 +3,13 @@
     Página principal
 </button>
 <p class="text-2xl text-center">Configuración</p>
-<ng-container *ngIf="authService.user() as user">
+<div *ngIf="authService.user() as user" class="flex flex-col gap-4">
     @if (user.role === 'admin') {
+        <hr>
         <app-raspberry-configuration></app-raspberry-configuration>
+        <hr>
         <app-manage-users></app-manage-users>
     }
+    <hr>
     <app-user-configuration></app-user-configuration>
-</ng-container>
+</div>
