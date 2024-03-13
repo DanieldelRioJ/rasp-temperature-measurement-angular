@@ -1,0 +1,26 @@
+<ng-container *ngIf="device() as deviceObj">
+    <div [class.bg-green-500]="deviceObj.last_temperature > 60" [class.bg-red-500]="deviceObj.last_temperature < 60"
+         class="flex flex-shrink flex-col p-5 text-white">
+        <div class="flex justify-between items-baseline gap-4">
+            <p class="pb-0 text-3xl text-center">{{ deviceObj.name }} </p>
+            <span
+                class="block p-3 rounded-full border border-black" style="box-shadow: 0px 0px 5px black"
+                [class.bg-green-400]="deviceObj.is_online"
+                [matTooltip]="deviceObj.is_online ? 'Online': 'Desconectado'"></span>
+        </div>
+        <span class="flex justify-between text-4xl gap-4"><span class="text-xl">Actual:</span>
+            {{ deviceObj.last_temperature | number: '1.0-2':'es' }}ºC</span>
+        <ng-container *ngIf="minMaxMeasurements$ | async as minMaxMeasurements">
+        <span [matTooltip]="(minMaxMeasurements[0].date * 1000 | date: 'medium') ?? ''"
+              [matTooltipDisabled]="minMaxMeasurements == null || minMaxMeasurements.length == 0 ||minMaxMeasurements[0].date == null"
+              class="flex justify-between text-4xl gap-4"><span
+            class="text-xl">Max:</span>
+            {{ minMaxMeasurements?.[0]?.temperature | number: '1.0-2':'es' }}ºC</span>
+            <span [matTooltip]="(minMaxMeasurements[1].date * 1000 | date: 'medium') ?? ''"
+                  [matTooltipDisabled]="minMaxMeasurements == null || minMaxMeasurements.length == 0 ||minMaxMeasurements[1].date == null"
+                  class="flex justify-between text-4xl gap-4"><span
+                class="text-xl">Min:</span>
+                {{ minMaxMeasurements?.[1]?.temperature | number: '1.0-2':'es' }}ºC</span>
+        </ng-container>
+    </div>
+</ng-container>
