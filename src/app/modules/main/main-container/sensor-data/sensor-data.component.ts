@@ -8,8 +8,8 @@ import { SummaryDataComponent } from './summary-data/summary-data.component';
 import { DetailedDataComponent } from './detailed-data/detailed-data.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { now } from 'moment';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SensorDataFormService } from './sensor-data-form.service';
 
 @Component({
     selector: 'app-sensor-data',
@@ -22,22 +22,18 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
         MatDatepickerModule,
         ReactiveFormsModule,
     ],
+    providers: [SensorDataFormService],
     templateUrl: './sensor-data.component.html',
 })
 export class SensorDataComponent implements OnInit {
     @Input() reload$?: Observable<void>;
     devices: RegisteredSensor[] = [];
+    range = this.sensorDataFormService.range;
     private _destroyRef = inject(DestroyRef);
-
-    today = new Date();
-    yesterday = new Date(new Date().setDate(this.today.getDate() - 1));
-    range = new FormGroup({
-        start: new FormControl<Date | null>(this.yesterday),
-        end: new FormControl<Date | null>(this.today),
-    });
 
     constructor(
         private readonly _registeredDevicesService: RegisteredDevicesService,
+        public readonly sensorDataFormService: SensorDataFormService,
     ) {}
 
     ngOnInit(): void {
@@ -51,6 +47,4 @@ export class SensorDataComponent implements OnInit {
             .getRegisteredDevices()
             .subscribe((devices) => (this.devices = devices));
     }
-
-    protected readonly now = now;
 }

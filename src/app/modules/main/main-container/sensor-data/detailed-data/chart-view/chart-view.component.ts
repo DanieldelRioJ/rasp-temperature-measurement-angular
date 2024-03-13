@@ -30,18 +30,16 @@ export class ChartViewComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         effect(
             () => {
-                const data = [
-                    { year: 2010, count: 10 },
-                    { year: 2011, count: 20 },
-                    { year: 2012, count: 15 },
-                    { year: 2013, count: 25 },
-                    { year: 2014, count: 22 },
-                    { year: 2015, count: 30 },
-                    { year: 2016, count: 28 },
-                ];
                 const myData = this.measurements();
                 if (myData == null) {
                     return;
+                }
+                let unit: 'hour' | 'day' = 'hour';
+                if (
+                    myData.length > 0 &&
+                    myData[myData.length - 1].date - myData[0].date > 80000
+                ) {
+                    unit = 'day';
                 }
                 this.myCHart?.destroy();
                 this.myCHart = new Chart(this.chartCanvas.nativeElement, {
@@ -56,9 +54,14 @@ export class ChartViewComponent implements AfterViewInit {
                         ],
                     },
                     options: {
+                        locale: 'es',
+                        spanGaps: false,
+                        responsive: true,
+                        maintainAspectRatio: false,
                         scales: {
                             x: {
                                 type: 'time',
+                                time: { unit: unit },
                             },
                         },
                         plugins: {

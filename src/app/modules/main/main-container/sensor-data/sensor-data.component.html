@@ -3,7 +3,7 @@
         <div class="flex gap-4">
             <mat-form-field>
                 <mat-label>Enter a date range</mat-label>
-                <mat-date-range-input [formGroup]="range" [rangePicker]="picker" [max]="today">
+                <mat-date-range-input [formGroup]="range" [rangePicker]="picker" [max]="sensorDataFormService.today">
                     <input matStartDate formControlName="start" placeholder="Start date">
                     <input matEndDate formControlName="end" placeholder="End date">
                 </mat-date-range-input>
@@ -20,7 +20,7 @@
         </div>
     </form>
     <app-summary-data [devices]="devices"></app-summary-data>
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
         @for (device of devices; track device) {
             <app-detailed-data [device]="device"></app-detailed-data>
         } @empty {

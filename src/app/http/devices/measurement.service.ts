@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { backUrl } from '../../../environments/environment';
+import { cleanObject } from '../../core/utls/clean-object';
 
 export interface Measurement {
     temperature: number;
@@ -16,11 +17,11 @@ export class MeasurementService {
 
     getMeasurementByDeviceAndDates(
         sensorId: string,
-        start_date: number,
-        end_date: number,
+        start_date?: number,
+        end_date?: number,
     ) {
         const httpParams = new HttpParams({
-            fromObject: { start_date, end_date },
+            fromObject: cleanObject({ start_date, end_date }),
         });
         return this._httpClient.get<Measurement[]>(
             `${backUrl}/registered-temperature-sensors/${sensorId}/measurement`,
@@ -30,11 +31,11 @@ export class MeasurementService {
 
     getMaxByDeviceAndDates(
         sensorId: string,
-        start_date: number,
-        end_date: number,
+        start_date?: number,
+        end_date?: number,
     ) {
         const httpParams = new HttpParams({
-            fromObject: { start_date, end_date },
+            fromObject: cleanObject({ start_date, end_date }),
         });
         return this._httpClient.get<Measurement>(
             `${backUrl}/registered-temperature-sensors/${sensorId}/max`,
@@ -44,14 +45,14 @@ export class MeasurementService {
 
     getMinByDeviceAndDates(
         sensorId: string,
-        start_date: number,
-        end_date: number,
+        start_date?: number,
+        end_date?: number,
     ) {
         const httpParams = new HttpParams({
-            fromObject: { start_date, end_date },
+            fromObject: cleanObject({ start_date, end_date }),
         });
         return this._httpClient.get<Measurement>(
-            `${backUrl}/registered-temperature-sensors/${sensorId}/max`,
+            `${backUrl}/registered-temperature-sensors/${sensorId}/min`,
             { params: httpParams },
         );
     }
