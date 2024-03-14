@@ -20,6 +20,7 @@ import {
 import { ChartViewComponent } from './chart-view/chart-view.component';
 import { SensorDataFormService } from '../sensor-data-form.service';
 import { backUrl } from '../../../../../../environments/environment';
+import { TableViewComponent } from './table-view/table-view.component';
 
 @Component({
     selector: 'app-detailed-data',
@@ -35,6 +36,7 @@ import { backUrl } from '../../../../../../environments/environment';
         MatIconButton,
         ChartViewComponent,
         MatIconAnchor,
+        TableViewComponent,
     ],
     templateUrl: './detailed-data.component.html',
 })

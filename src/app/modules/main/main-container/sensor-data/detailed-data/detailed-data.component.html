@@ -22,6 +22,7 @@
         @if (viewMode === 'chart') {
             <app-chart-view [measurements]="measurementList" [device]="device()"></app-chart-view>
         } @else {
+            <app-table-view [measurements]="measurementList" [device]="device()"></app-table-view>
 
         }
     </mat-card-content>
