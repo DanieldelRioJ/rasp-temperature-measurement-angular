@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-4" [formGroup]="loginForm">
     <h1 class="text-center">Login</h1>
     <mat-form-field>
-        <mat-icon matPrefix>mail</mat-icon>
+        <mat-icon matPrefix>alternate_email</mat-icon>
         <mat-label>Email</mat-label>
         <input type="email" matInput [formControlName]="'email'">
         <mat-error *appFormError="let error from 'Email'">{{ error }}</mat-error>

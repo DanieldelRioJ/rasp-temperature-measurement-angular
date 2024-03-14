@@ -1,16 +1,22 @@
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-4" [formGroup]="registerForm">
     <h1 class="text-center">Registro</h1>
-    <p><span class="font-bold">Email: </span>daniel.delrio.juncal</p>
+    <mat-form-field>
+        <mat-icon matPrefix>alternate_email</mat-icon>
+        <mat-label>Email</mat-label>
+        <input type="email" matInput formControlName="email">
+        <mat-error *appFormError="let error from 'email'">{{ error }}</mat-error>
+    </mat-form-field>
 
     <mat-form-field>
-        <mat-icon matPrefix>password</mat-icon>
-        <mat-label>Contraseña</mat-label>
-        <input type="password" matInput>
+        <mat-label>Token</mat-label>
+        <input type="token" matInput formControlName="token">
+        <mat-error *appFormError="let error from 'token'">{{ error }}</mat-error>
     </mat-form-field>
     <mat-form-field>
         <mat-icon matPrefix>password</mat-icon>
-        <mat-label>Repetir contraseña</mat-label>
-        <input type="password" matInput>
+        <mat-label>Nueva contraseña</mat-label>
+        <input type="password" matInput formControlName="password">
+        <mat-error *appFormError="let error from 'nueva contraseña'">{{ error }}</mat-error>
     </mat-form-field>
-    <button mat-flat-button color="primary">Registrarse</button>
+    <button mat-flat-button color="primary" [disabled]="registerForm.invalid" (click)="register()">Registrarse</button>
 </div>
