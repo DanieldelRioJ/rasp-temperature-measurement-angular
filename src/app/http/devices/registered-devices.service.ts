@@ -26,4 +26,17 @@ export class RegisteredDevicesService {
             registeredSensor,
         );
     }
+
+    deleteSensorById(sensorId: string) {
+        return this._httpClient.delete(
+            `${backUrl}/registered-temperature-sensors/${sensorId}`,
+        );
+    }
+
+    changeSensorId(oldSensorId: string, newSensorId: string) {
+        return this._httpClient.put(
+            `${backUrl}/registered-temperature-sensors/${oldSensorId}`,
+            { newSensorId },
+        );
+    }
 }

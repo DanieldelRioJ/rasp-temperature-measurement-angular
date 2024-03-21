@@ -1,5 +1,5 @@
-<div class="w-fit flex items-center gap-4 flex-wrap" [formGroup]="inviteForm">
-    <h1 class="text-center">Gestión de usuarios</h1>
+<div class="w-fit flex items-center gap-4 flex-wrap mb-4" [formGroup]="inviteForm">
+    <h1>Añadir nuevo usuario</h1>
     <mat-form-field>
         <mat-label>Email nuevo usuario</mat-label>
         <input type="text" matInput formControlName="email">
@@ -17,3 +17,6 @@
         Invitar
     </button>
 </div>
+<hr>
+<p class="text-2xl">Lista de usuarios</p>
+<app-manage-users-list class="w-72 block pt-4"></app-manage-users-list>

@@ -15,6 +15,8 @@ import { RegisterService } from '../../../../../http/register.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../../../../shared/notification/notification.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ManageUsersListComponent } from './manage-users-list/manage-users-list.component';
+import { MatTable } from '@angular/material/table';
 
 @Component({
     selector: 'app-manage-users',
@@ -30,6 +32,8 @@ import { HttpErrorResponse } from '@angular/common/http';
         ReactiveFormsModule,
         MatSelect,
         MatOption,
+        ManageUsersListComponent,
+        MatTable,
     ],
     templateUrl: './manage-users.component.html',
 })

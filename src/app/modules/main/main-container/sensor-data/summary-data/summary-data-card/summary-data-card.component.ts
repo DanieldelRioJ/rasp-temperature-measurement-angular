@@ -1,17 +1,29 @@
-import { Component, input } from '@angular/core';
+import { Component, DestroyRef, inject, input } from '@angular/core';
 import { RegisteredSensor } from '../../../../../../shared/models/registered-sensor.model';
 import { AsyncPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
 import {
     Measurement,
     MeasurementService,
 } from '../../../../../../http/devices/measurement.service';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { combineLatest, filter, Observable, startWith, switchMap } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import {
+    combineLatest,
+    filter,
+    Observable,
+    startWith,
+    switchMap,
+    tap,
+} from 'rxjs';
 import { SensorDataFormService } from '../../sensor-data-form.service';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { AuthService } from '../../../../../../core/services/auth.service';
+import { RegisteredDevicesService } from '../../../../../../http/devices/registered-devices.service';
+import { NotificationService } from '../../../../../../shared/notification/notification.service';
+import { SensorDataComponent } from '../../sensor-data.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../../../../../shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-summary-data-card',
@@ -30,10 +42,15 @@ import { AuthService } from '../../../../../../core/services/auth.service';
 export class SummaryDataCardComponent {
     device = input<RegisteredSensor>();
     minMaxMeasurements$: Observable<Measurement[]>;
+    private readonly _destroyRef = inject(DestroyRef);
 
     constructor(
         private readonly _sensorDataFormService: SensorDataFormService,
         private readonly _measurementService: MeasurementService,
+        private readonly _registeredDeviceService: RegisteredDevicesService,
+        private readonly _matDialog: MatDialog,
+        private readonly _notificationService: NotificationService,
+        private readonly _sensorDataComponent: SensorDataComponent,
         public readonly authService: AuthService,
     ) {
         this.minMaxMeasurements$ = combineLatest([
@@ -68,5 +85,42 @@ export class SummaryDataCardComponent {
                 ]);
             }),
         );
+    }
+
+    deleteDevice() {
+        this._matDialog
+            .open(ConfirmationDialogComponent, {
+                data: '¿Seguro que quieres eliminar el sensor?',
+                width: '400px',
+            })
+            .afterClosed()
+            .pipe(
+                filter((response) => response),
+                switchMap(() =>
+                    this._registeredDeviceService
+                        .deleteSensorById(this.device()!.id)
+                        .pipe(
+                            tap({
+                                next: () => {
+                                    this._sensorDataComponent.getData();
+                                    this._notificationService.send(
+                                        'Dispositivo eliminado con éxito',
+                                        null,
+                                        'success',
+                                    );
+                                },
+                                error: () => {
+                                    this._notificationService.send(
+                                        'Ha ocurrido un error eliminando el dispositivo',
+                                        null,
+                                        'error',
+                                    );
+                                },
+                            }),
+                        ),
+                ),
+                takeUntilDestroyed(this._destroyRef),
+            )
+            .subscribe();
     }
 }
