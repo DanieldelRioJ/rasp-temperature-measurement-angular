@@ -1,5 +1,6 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, Inject, inject, OnInit } from '@angular/core';
 import {
+    MAT_DIALOG_DATA,
     MatDialogActions,
     MatDialogClose,
     MatDialogContent,
@@ -25,7 +26,7 @@ import { FormErrorDirective } from '../../../../shared/form-error/form-error.dir
 import { combineLatest } from 'rxjs';
 
 @Component({
-    selector: 'app-add-sensor',
+    selector: 'app-edit-sensor',
     standalone: true,
     imports: [
         MatDialogTitle,
@@ -46,13 +47,13 @@ import { combineLatest } from 'rxjs';
         FormErrorDirective,
     ],
     providers: [NotificationService],
-    templateUrl: './add-sensor.component.html',
+    templateUrl: './edit-sensor.component.html',
 })
-export class AddSensorComponent implements OnInit {
+export class EditSensorComponent implements OnInit {
     sensors: AvailableDevice[] = [];
     device = this._fb.nonNullable.group({
-        id: ['', Validators.required],
-        name: ['', Validators.required],
+        id: [this.matDialogData.id, Validators.required],
+        name: [this.matDialogData.name, Validators.required],
     });
     private _destroyRef = inject(DestroyRef);
 
@@ -61,7 +62,9 @@ export class AddSensorComponent implements OnInit {
         private readonly _availableDevicesService: AvailableDevicesService,
         private readonly _registeredDevicesService: RegisteredDevicesService,
         private readonly _notificationService: NotificationService,
-        private readonly _matDialogRef: MatDialogRef<AddSensorComponent>,
+        private readonly _matDialogRef: MatDialogRef<EditSensorComponent>,
+        @Inject(MAT_DIALOG_DATA)
+        private readonly matDialogData: { id: string; name: string },
     ) {}
 
     ngOnInit(): void {
@@ -80,20 +83,21 @@ export class AddSensorComponent implements OnInit {
                 );
                 this.sensors = availableSensors.sensors.filter(
                     (availableSensor) =>
-                        !registeredSensorIdList.includes(availableSensor.id),
+                        !registeredSensorIdList.includes(availableSensor.id) ||
+                        availableSensor.id === this.matDialogData.id,
                 );
             });
     }
 
-    registerSensor() {
+    changeSensor() {
         const value = this.device.getRawValue();
         this._registeredDevicesService
-            .addAvailableDevice(value)
+            .changeSensor(this.matDialogData.id, value)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({
                 next: () => {
                     this._notificationService.send(
-                        `Sensor de temperatura "${value.name}" creado con éxito`,
+                        `Sensor de temperatura "${value.name}" actualizado`,
                         null,
                         'success',
                     );
@@ -101,9 +105,9 @@ export class AddSensorComponent implements OnInit {
                 },
                 error: (httpError: HttpErrorResponse) => {
                     this._notificationService.send(
-                        `No se pudo añadir el sensor`,
+                        `No se pudo actualizar el sensor`,
                         httpError.message,
-                        'success',
+                        'error',
                     );
                 },
             });

@@ -24,6 +24,8 @@ import { NotificationService } from '../../../../../../shared/notification/notif
 import { SensorDataComponent } from '../../sensor-data.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../../../../shared/confirmation-dialog/confirmation-dialog.component';
+import { EditSensorComponent } from '../../../edit-sensor/edit-sensor.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'app-summary-data-card',
@@ -36,12 +38,14 @@ import { ConfirmationDialogComponent } from '../../../../../../shared/confirmati
         DatePipe,
         MatIcon,
         MatIconButton,
+        MatProgressSpinner,
     ],
     templateUrl: './summary-data-card.component.html',
 })
 export class SummaryDataCardComponent {
     device = input<RegisteredSensor>();
     minMaxMeasurements$: Observable<Measurement[]>;
+    loading: boolean = false;
     private readonly _destroyRef = inject(DestroyRef);
 
     constructor(
@@ -60,6 +64,10 @@ export class SummaryDataCardComponent {
                 filter(() => this._sensorDataFormService.range.valid),
             ),
         ]).pipe(
+            tap({
+                next: () => (this.loading = true),
+                error: () => (this.loading = false),
+            }),
             switchMap(([device, range]) => {
                 const endDate = range.end;
                 endDate?.setHours(23, 59, 59, 999);
@@ -83,6 +91,10 @@ export class SummaryDataCardComponent {
                             : undefined,
                     ),
                 ]);
+            }),
+            tap({
+                next: () => (this.loading = false),
+                error: () => (this.loading = false),
             }),
         );
     }
@@ -122,5 +134,21 @@ export class SummaryDataCardComponent {
                 takeUntilDestroyed(this._destroyRef),
             )
             .subscribe();
+    }
+
+    editDevice() {
+        this._matDialog
+            .open(EditSensorComponent, {
+                data: this.device(),
+                width: '400px',
+            })
+            .afterClosed()
+            .pipe(
+                filter((result) => result),
+                takeUntilDestroyed(this._destroyRef),
+            )
+            .subscribe(() => {
+                this._sensorDataComponent.getData();
+            });
     }
 }

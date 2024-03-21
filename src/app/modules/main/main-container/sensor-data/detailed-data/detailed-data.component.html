@@ -19,12 +19,20 @@
         </div>
     </mat-card-title>
     <mat-card-content>
-        @if (viewMode === 'chart') {
-            <app-chart-view [measurements]="measurementList" [device]="device()"></app-chart-view>
-        } @else {
-            <app-table-view [measurements]="measurementList" [device]="device()"></app-table-view>
+        <div class="relative">
+            @if (loading) {
+                <mat-progress-spinner class="m-auto absolute top-0 left-0 w-full h-full" diameter="100"
+                                      mode="indeterminate"></mat-progress-spinner>
+            }
+            @if (viewMode === 'chart') {
+                <app-chart-view [measurements]="measurementList" [device]="device()"></app-chart-view>
+            } @else {
+                <app-table-view [measurements]="measurementList" [device]="device()"></app-table-view>
 
-        }
+            }
+
+        </div>
+
     </mat-card-content>
 
 </mat-card>

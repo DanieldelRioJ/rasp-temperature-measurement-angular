@@ -52,9 +52,9 @@ export class SensorDataComponent {
             .open(AddSensorComponent, {
                 width: '400px',
             })
-            .afterOpened()
+            .afterClosed()
             .pipe(
-                filter((result) => result != null),
+                filter((result) => result),
                 takeUntilDestroyed(this._destroyRef),
             )
             .subscribe(() => {

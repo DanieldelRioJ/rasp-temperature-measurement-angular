@@ -13,7 +13,7 @@
 
             @if (authService.user()?.role === 'admin') {
                 <div>
-                    <button mat-icon-button matTooltip="Editar">
+                    <button mat-icon-button matTooltip="Editar" (click)="editDevice()">
                         <mat-icon>edit</mat-icon>
                     </button>
                     <button mat-icon-button matTooltip="Eliminar" (click)="deleteDevice()">
@@ -24,12 +24,16 @@
         </div>
         <span class="flex justify-between text-4xl gap-4"><span class="text-xl">Actual:</span>
             {{ deviceObj.last_temperature | number: '1.0-2':'es' }}ºC</span>
+
+        @if (loading) {
+            <mat-progress-spinner class="m-auto" diameter="40" mode="indeterminate"></mat-progress-spinner>
+        }
         <ng-container *ngIf="minMaxMeasurements$ | async as minMaxMeasurements">
-        <span [matTooltip]="(minMaxMeasurements[0].date * 1000 | date: 'medium') ?? ''"
-              [matTooltipDisabled]="minMaxMeasurements == null || minMaxMeasurements.length == 0 ||minMaxMeasurements[0].date == null"
-              class="flex justify-between text-4xl gap-4"><span
-            class="text-xl">Max:</span>
-            {{ minMaxMeasurements?.[0]?.temperature | number: '1.0-2':'es' }}ºC</span>
+            <span [matTooltip]="(minMaxMeasurements[0].date * 1000 | date: 'medium') ?? ''"
+                  [matTooltipDisabled]="minMaxMeasurements == null || minMaxMeasurements.length == 0 ||minMaxMeasurements[0].date == null"
+                  class="flex justify-between text-4xl gap-4"><span
+                class="text-xl">Max:</span>
+                {{ minMaxMeasurements?.[0]?.temperature | number: '1.0-2':'es' }}ºC</span>
             <span [matTooltip]="(minMaxMeasurements[1].date * 1000 | date: 'medium') ?? ''"
                   [matTooltipDisabled]="minMaxMeasurements == null || minMaxMeasurements.length == 0 ||minMaxMeasurements[1].date == null"
                   class="flex justify-between text-4xl gap-4"><span

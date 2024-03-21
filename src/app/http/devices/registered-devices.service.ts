@@ -33,10 +33,10 @@ export class RegisteredDevicesService {
         );
     }
 
-    changeSensorId(oldSensorId: string, newSensorId: string) {
+    changeSensor(oldSensorId: string, newSensor: { id: string; name: string }) {
         return this._httpClient.put(
             `${backUrl}/registered-temperature-sensors/${oldSensorId}`,
-            { newSensorId },
+            newSensor,
         );
     }
 }

@@ -5,7 +5,7 @@ import {
     Measurement,
     MeasurementService,
 } from '../../../../../http/devices/measurement.service';
-import { combineLatest, filter, startWith, switchMap } from 'rxjs';
+import { combineLatest, filter, startWith, switchMap, tap } from 'rxjs';
 import {
     MatButtonToggle,
     MatButtonToggleGroup,
@@ -21,6 +21,7 @@ import { ChartViewComponent } from './chart-view/chart-view.component';
 import { SensorDataFormService } from '../sensor-data-form.service';
 import { backUrl } from '../../../../../../environments/environment';
 import { TableViewComponent } from './table-view/table-view.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'app-detailed-data',
@@ -37,6 +38,7 @@ import { TableViewComponent } from './table-view/table-view.component';
         ChartViewComponent,
         MatIconAnchor,
         TableViewComponent,
+        MatProgressSpinner,
     ],
     templateUrl: './detailed-data.component.html',
 })
@@ -48,6 +50,7 @@ export class DetailedDataComponent implements OnInit {
 
     viewMode = 'chart';
     backUrl = backUrl;
+    loading = false;
 
     constructor(
         private readonly _measurementService: MeasurementService,
@@ -64,6 +67,10 @@ export class DetailedDataComponent implements OnInit {
         ])
             .pipe(
                 filter(([device]) => device != null),
+                tap({
+                    next: () => (this.loading = true),
+                    error: () => (this.loading = false),
+                }),
                 switchMap(([device, range]) => {
                     const endDate = range.end;
                     endDate?.setHours(23, 59, 59, 999);
@@ -76,6 +83,10 @@ export class DetailedDataComponent implements OnInit {
                             ? Math.round(endDate?.getTime() / 1000)
                             : undefined,
                     );
+                }),
+                tap({
+                    next: () => (this.loading = false),
+                    error: () => (this.loading = false),
                 }),
                 takeUntilDestroyed(this._destroyRef),
             )
