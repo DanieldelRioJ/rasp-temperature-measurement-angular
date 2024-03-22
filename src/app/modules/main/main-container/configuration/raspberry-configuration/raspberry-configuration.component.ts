@@ -17,6 +17,10 @@ import {
     MatChipRemove,
     MatChipRow,
 } from '@angular/material/chips';
+import { RaspberryConfigurationService } from '../../../../../http/raspberry-configuration/raspberry-configuration.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NotificationService } from '../../../../../shared/notification/notification.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-raspberry-configuration',
@@ -38,7 +42,7 @@ import {
     templateUrl: './raspberry-configuration.component.html',
 })
 export class RaspberryConfigurationComponent {
-    emails = ['angular@g.com'];
+    emails: string[] = [];
     private _destroyRef = inject(DestroyRef);
 
     raspberryConfigurationForm = this._formBuilder.nonNullable.group({
@@ -46,25 +50,75 @@ export class RaspberryConfigurationComponent {
     });
     formControl: FormControl = new FormControl<string>('', [Validators.email]);
 
-    constructor(private readonly _formBuilder: FormBuilder) {}
+    constructor(
+        private readonly _formBuilder: FormBuilder,
+        private readonly _raspberryConfigurationService: RaspberryConfigurationService,
+        private readonly _notificationService: NotificationService,
+    ) {
+        this.getEmails();
+    }
 
     changeAppName() {}
 
     removeEmail(keyword: string) {
         const index = this.emails.indexOf(keyword);
         if (index >= 0) {
-            this.emails.splice(index, 1);
+            this._raspberryConfigurationService
+                .deleteNotificationEmail(this.emails[index])
+                .pipe(takeUntilDestroyed(this._destroyRef))
+                .subscribe({
+                    next: () => {
+                        this.emails.splice(index, 1);
+                    },
+                    error: (error: HttpErrorResponse) => {
+                        this._notificationService.send(
+                            'Ha ocurrido un error intentando borrar el email de la lista de emails de notificación',
+                            error.message,
+                            'error',
+                        );
+                    },
+                });
         }
+    }
+
+    getEmails() {
+        this._raspberryConfigurationService
+            .getNotificationEmails()
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({
+                next: (emails) => {
+                    this.emails = emails;
+                },
+                error: (error: HttpErrorResponse) => {
+                    this._notificationService.send(
+                        'Ha ocurrido un error intentando obtener el listado de emails de notificación',
+                        error.message,
+                        'error',
+                    );
+                },
+            });
     }
 
     addEmail(event: MatChipInputEvent): void {
         const value = (event.value || '').trim();
 
         // Add our keyword
-        if (value && this.formControl.valid) {
-            this.emails.push(value);
-            // Clear the input value
-            event.chipInput!.clear();
-        }
+        this._raspberryConfigurationService
+            .addNotificationEmail(value)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({
+                next: () => {
+                    this.emails.push(value);
+                    // Clear the input value
+                    event.chipInput!.clear();
+                },
+                error: (error: HttpErrorResponse) => {
+                    this._notificationService.send(
+                        'Ha ocurrido un error intentando añadir el email al listado de emails de notificacion',
+                        error.message,
+                        'error',
+                    );
+                },
+            });
     }
 }

@@ -13,8 +13,8 @@
     </div>
     <div class="w-fit flex items-center gap-4 flex-wrap" [formGroup]="raspberryConfigurationForm">
         <h1 class="text-center">Lista de emails de notificación</h1>
-        <mat-form-field class="example-form-field">
-            <mat-label>Video keywords</mat-label>
+        <mat-form-field class="example-form-field w-72">
+            <mat-label>Lista de email de notificación</mat-label>
             <mat-chip-grid #chipGrid aria-label="Enter keywords">
                 @for (keyword of emails; track keyword) {
                     <mat-chip-row (removed)="removeEmail(keyword)">
