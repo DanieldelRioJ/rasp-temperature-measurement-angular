@@ -40,6 +40,10 @@ import { NotificationService } from '../../../shared/notification/notification.s
 export class PasswordRecoverComponent {
     @Input() email?: string;
 
+    @Input() set token(token: string) {
+        this.passwordRecoverForm.patchValue({ recovery_token: token });
+    }
+
     private _destroyRef = inject(DestroyRef);
 
     passwordRecoverForm = this._formBuilder.nonNullable.group({
