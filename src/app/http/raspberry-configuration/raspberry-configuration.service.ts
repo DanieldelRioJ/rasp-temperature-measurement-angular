@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { backUrl } from '../../../environments/environment';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class RaspberryConfigurationService {
+    appName = signal<string>('Raspberry Configuration');
+
     constructor(private readonly _httpClient: HttpClient) {}
 
     getNotificationEmails() {
@@ -26,5 +28,17 @@ export class RaspberryConfigurationService {
         return this._httpClient.delete(
             `${backUrl}/notification-emails/${email}`,
         );
+    }
+
+    setName(name: string) {
+        return this._httpClient
+            .post(`${backUrl}/rasp-configuration/${name}`, null)
+            .pipe(tap(() => this.appName.set(name)));
+    }
+
+    getName() {
+        return this._httpClient
+            .get<{ name: string }>(`${backUrl}/rasp-configuration`)
+            .pipe(tap(({ name }) => this.appName.set(name)));
     }
 }

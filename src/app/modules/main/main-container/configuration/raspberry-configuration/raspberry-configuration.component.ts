@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { FormErrorDirective } from '../../../../../shared/form-error/form-error.directive';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -46,7 +46,10 @@ export class RaspberryConfigurationComponent {
     private _destroyRef = inject(DestroyRef);
 
     raspberryConfigurationForm = this._formBuilder.nonNullable.group({
-        name: new FormControl<string>('', [Validators.required]),
+        name: new FormControl<string>('', [
+            Validators.required,
+            Validators.minLength(4),
+        ]),
     });
     formControl: FormControl = new FormControl<string>('', [Validators.email]);
 
@@ -56,9 +59,34 @@ export class RaspberryConfigurationComponent {
         private readonly _notificationService: NotificationService,
     ) {
         this.getEmails();
+        effect(() => {
+            this.raspberryConfigurationForm.setValue({
+                name: this._raspberryConfigurationService.appName(),
+            });
+        });
     }
 
-    changeAppName() {}
+    changeAppName() {
+        this._raspberryConfigurationService
+            .setName(this.raspberryConfigurationForm.value.name!)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({
+                next: () => {
+                    this._notificationService.send(
+                        'Nombre cambiado con éxito',
+                        null,
+                        'success',
+                    );
+                },
+                error: (error: HttpErrorResponse) => {
+                    this._notificationService.send(
+                        'Ha ocurrido un error intentando borrar el email de la lista de emails de notificación',
+                        error.message,
+                        'error',
+                    );
+                },
+            });
+    }
 
     removeEmail(keyword: string) {
         const index = this.emails.indexOf(keyword);

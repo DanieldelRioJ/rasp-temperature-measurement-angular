@@ -6,6 +6,8 @@ import { SensorDataComponent } from './sensor-data/sensor-data.component';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { AuthService } from '../../../core/services/auth.service';
+import { RaspberryConfigurationService } from '../../../http/raspberry-configuration/raspberry-configuration.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-main-container',
@@ -26,5 +28,15 @@ import { AuthService } from '../../../core/services/auth.service';
     templateUrl: './main-container.component.html',
 })
 export class MainContainerComponent {
-    constructor(public readonly authService: AuthService) {}
+    appName = this._raspberryConfigurationService.appName;
+
+    constructor(
+        public readonly authService: AuthService,
+        private readonly _raspberryConfigurationService: RaspberryConfigurationService,
+    ) {
+        this._raspberryConfigurationService
+            .getName()
+            .pipe(takeUntilDestroyed())
+            .subscribe();
+    }
 }
