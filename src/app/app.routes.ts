@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { canActivateGuard } from './core/can-activate.guard';
+import { alreadyLogged, canActivateGuard } from './core/can-activate.guard';
 
 export const routes: Routes = [
     {
@@ -12,5 +12,6 @@ export const routes: Routes = [
         path: 'login',
         loadChildren: () =>
             import('./modules/login/login.routes').then((m) => m.LOGIN_ROUTES),
+        canActivate: [alreadyLogged],
     },
 ];

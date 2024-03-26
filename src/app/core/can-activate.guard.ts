@@ -11,3 +11,13 @@ export const canActivateGuard: CanActivateFn = () => {
     router.navigate(['login']);
     return false;
 };
+
+export const alreadyLogged: CanActivateFn = () => {
+    const authService = inject(AuthService);
+    if (authService.user() == null) {
+        return true;
+    }
+    const router = inject(Router);
+    router.navigate(['/']);
+    return false;
+};

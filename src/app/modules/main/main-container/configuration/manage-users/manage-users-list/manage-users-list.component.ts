@@ -61,7 +61,28 @@ export class ManageUsersListComponent implements OnInit {
 
     reload() {}
 
-    deleteUser(user: User) {}
+    deleteUser(user: User) {
+        this._userService
+            .deleteUser(user)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({
+                next: () => {
+                    this._getData();
+                    this._notificationService.send(
+                        'Usuario eliminado',
+                        null,
+                        'success',
+                    );
+                },
+                error: (error) => {
+                    this._notificationService.send(
+                        'Ha ocurrido un eliminando el usuario',
+                        null,
+                        'error',
+                    );
+                },
+            });
+    }
 
     private _getData() {
         this._userService
@@ -76,6 +97,7 @@ export class ManageUsersListComponent implements OnInit {
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({
                 next: () => {
+                    this._getData();
                     this._notificationService.send(
                         'Rol cambiado',
                         null,
@@ -86,7 +108,7 @@ export class ManageUsersListComponent implements OnInit {
                     this._notificationService.send(
                         'Ha ocurrido un error cambiando el rol',
                         null,
-                        'success',
+                        'error',
                     );
                 },
             });

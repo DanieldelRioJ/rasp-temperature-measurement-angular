@@ -1,7 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { backUrl } from '../../../environments/environment';
 import { map, tap } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +10,14 @@ import { map, tap } from 'rxjs';
 export class RaspberryConfigurationService {
     appName = signal<string>('Raspberry Configuration');
 
-    constructor(private readonly _httpClient: HttpClient) {}
+    constructor(
+        private readonly _httpClient: HttpClient,
+        private readonly _title: Title,
+    ) {
+        effect(() => {
+            this._title.setTitle(`Temperaturas ${this.appName()}`);
+        });
+    }
 
     getNotificationEmails() {
         return this._httpClient
