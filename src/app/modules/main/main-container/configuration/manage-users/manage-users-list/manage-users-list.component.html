@@ -20,10 +20,13 @@
     <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-            <div class="flex">
+            <div class="flex items-center">
                 @if (authService.user()?.id !== element.id) {
-                    @if (element.role === 'admin') {
+                    @if (element.changingRole) {
+                        <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+                    } @else if (element.role === 'admin') {
                         <button mat-icon-button color="primary" matTooltip="Quitar admin"
+                                [disabled]="element.changingRole"
                                 (click)="changeRole(element, 'user')">
                             <mat-icon>arrow_downward</mat-icon>
                         </button>
@@ -33,9 +36,13 @@
                             <mat-icon>arrow_upward</mat-icon>
                         </button>
                     }
-                    <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="deleteUser(element)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
+                    @if (element.changingRole) {
+                        <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+                    } @else {
+                        <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="deleteUser(element)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    }
                 }
 
             </div>

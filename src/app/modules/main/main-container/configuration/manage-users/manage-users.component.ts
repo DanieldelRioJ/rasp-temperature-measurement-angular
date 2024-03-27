@@ -17,6 +17,7 @@ import { NotificationService } from '../../../../../shared/notification/notifica
 import { HttpErrorResponse } from '@angular/common/http';
 import { ManageUsersListComponent } from './manage-users-list/manage-users-list.component';
 import { MatTable } from '@angular/material/table';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'app-manage-users',
@@ -34,6 +35,7 @@ import { MatTable } from '@angular/material/table';
         MatOption,
         ManageUsersListComponent,
         MatTable,
+        MatProgressSpinner,
     ],
     templateUrl: './manage-users.component.html',
 })
@@ -45,6 +47,7 @@ export class ManageUsersComponent {
         ]),
         role: new FormControl<string>('user', [Validators.required]),
     });
+    loadingInvitation = false;
 
     private _destroyRef = inject(DestroyRef);
 
@@ -55,12 +58,14 @@ export class ManageUsersComponent {
     ) {}
 
     invite() {
+        this.loadingInvitation = true;
         const inviteValue = this.inviteForm.value;
         this._registerService
             .invite(inviteValue.email!, inviteValue.role!)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({
                 next: () => {
+                    this.loadingInvitation = false;
                     this._notificationService.send(
                         `Invitación enviada`,
                         null,
@@ -68,6 +73,7 @@ export class ManageUsersComponent {
                     );
                 },
                 error: (httpErrorResponse: HttpErrorResponse) => {
+                    this.loadingInvitation = false;
                     if (httpErrorResponse.status == 409) {
                         this._notificationService.send(
                             `El usuario ya está invitado o está registrado`,

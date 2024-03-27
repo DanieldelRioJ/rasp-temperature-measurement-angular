@@ -77,15 +77,25 @@ export class EditSensorComponent implements OnInit {
             this._registeredDevicesService.getRegisteredDevices(),
         ])
             .pipe(takeUntilDestroyed(this._destroyRef))
-            .subscribe(([availableSensors, registeredSensors]) => {
-                const registeredSensorIdList = registeredSensors.map(
-                    (sensor) => sensor.id,
-                );
-                this.sensors = availableSensors.sensors.filter(
-                    (availableSensor) =>
-                        !registeredSensorIdList.includes(availableSensor.id) ||
-                        availableSensor.id === this.matDialogData.id,
-                );
+            .subscribe({
+                next: ([availableSensors, registeredSensors]) => {
+                    const registeredSensorIdList = registeredSensors.map(
+                        (sensor) => sensor.id,
+                    );
+                    this.sensors = availableSensors.sensors.filter(
+                        (availableSensor) =>
+                            !registeredSensorIdList.includes(
+                                availableSensor.id,
+                            ) || availableSensor.id === this.matDialogData.id,
+                    );
+                },
+                error: (error: HttpErrorResponse) => {
+                    this._notificationService.send(
+                        'Ha ocurrido un error',
+                        error.message,
+                        'error',
+                    );
+                },
             });
     }
 

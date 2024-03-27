@@ -7,7 +7,6 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { AuthService } from '../../../core/services/auth.service';
 import { RaspberryConfigurationService } from '../../../http/raspberry-configuration/raspberry-configuration.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-main-container',
@@ -33,10 +32,5 @@ export class MainContainerComponent {
     constructor(
         public readonly authService: AuthService,
         private readonly _raspberryConfigurationService: RaspberryConfigurationService,
-    ) {
-        this._raspberryConfigurationService
-            .getName()
-            .pipe(takeUntilDestroyed())
-            .subscribe();
-    }
+    ) {}
 }

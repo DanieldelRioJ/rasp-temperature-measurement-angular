@@ -20,6 +20,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { AuthService } from '../../../../../../core/services/auth.service';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../../../../../../shared/notification/notification.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+
+interface UserItem extends User {
+    changingRole?: boolean;
+    deleting?: boolean;
+}
 
 @Component({
     selector: 'app-manage-users-list',
@@ -41,11 +47,12 @@ import { NotificationService } from '../../../../../../shared/notification/notif
         MatIcon,
         MatTooltip,
         NgIf,
+        MatProgressSpinner,
     ],
     templateUrl: './manage-users-list.component.html',
 })
 export class ManageUsersListComponent implements OnInit {
-    users: User[] = [];
+    users: UserItem[] = [];
     displayedColumns: string[] = ['email', 'role', 'action'];
     private _destroyRef = inject(DestroyRef);
 
@@ -91,12 +98,14 @@ export class ManageUsersListComponent implements OnInit {
             .subscribe((users) => (this.users = users));
     }
 
-    changeRole(user: User, role: string) {
+    changeRole(user: UserItem, role: string) {
+        user.changingRole = true;
         this._userService
             .changeRole(user, role)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({
                 next: () => {
+                    user.changingRole = false;
                     this._getData();
                     this._notificationService.send(
                         'Rol cambiado',
@@ -105,6 +114,7 @@ export class ManageUsersListComponent implements OnInit {
                     );
                 },
                 error: (error) => {
+                    user.changingRole = false;
                     this._notificationService.send(
                         'Ha ocurrido un error cambiando el rol',
                         null,

@@ -12,9 +12,13 @@
             <mat-option value="admin">Admin</mat-option>
         </mat-select>
     </mat-form-field>
-    <button mat-flat-button color="primary" [disabled]="inviteForm.invalid"
+    <button mat-flat-button color="primary" [disabled]="inviteForm.invalid || loadingInvitation"
             (click)="invite()">
-        Invitar
+        @if (loadingInvitation) {
+            <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+        } @else {
+            Invitar
+        }
     </button>
 </div>
 <hr>
