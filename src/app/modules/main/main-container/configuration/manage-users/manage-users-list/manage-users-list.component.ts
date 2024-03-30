@@ -21,6 +21,9 @@ import { AuthService } from '../../../../../../core/services/auth.service';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../../../../../../shared/notification/notification.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { ConfirmationDialogComponent } from '../../../../../../shared/confirmation-dialog/confirmation-dialog.component';
+import { filter, switchMap, tap } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 interface UserItem extends User {
     changingRole?: boolean;
@@ -60,6 +63,7 @@ export class ManageUsersListComponent implements OnInit {
         private readonly _userService: UserService,
         private readonly _notificationService: NotificationService,
         public readonly authService: AuthService,
+        private readonly _matDialog: MatDialog,
     ) {}
 
     ngOnInit(): void {
@@ -68,27 +72,42 @@ export class ManageUsersListComponent implements OnInit {
 
     reload() {}
 
-    deleteUser(user: User) {
-        this._userService
-            .deleteUser(user)
-            .pipe(takeUntilDestroyed(this._destroyRef))
-            .subscribe({
-                next: () => {
-                    this._getData();
-                    this._notificationService.send(
-                        'Usuario eliminado',
-                        null,
-                        'success',
+    deleteUser(user: UserItem) {
+        this._matDialog
+            .open(ConfirmationDialogComponent, {
+                data: '¿Seguro que quieres eliminar el usuario  ?',
+                width: '400px',
+            })
+            .afterClosed()
+            .pipe(
+                filter((response) => response),
+                switchMap(() => {
+                    user.deleting = true;
+                    return this._userService.deleteUser(user).pipe(
+                        tap({
+                            next: () => {
+                                user.deleting = false;
+                                this._getData();
+                                this._notificationService.send(
+                                    'Usuario eliminado',
+                                    null,
+                                    'success',
+                                );
+                            },
+                            error: (error) => {
+                                user.deleting = false;
+                                this._notificationService.send(
+                                    'Ha ocurrido un eliminando el usuario',
+                                    null,
+                                    'error',
+                                );
+                            },
+                        }),
                     );
-                },
-                error: (error) => {
-                    this._notificationService.send(
-                        'Ha ocurrido un eliminando el usuario',
-                        null,
-                        'error',
-                    );
-                },
-            });
+                }),
+                takeUntilDestroyed(this._destroyRef),
+            )
+            .subscribe();
     }
 
     private _getData() {

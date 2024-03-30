@@ -36,7 +36,7 @@
                             <mat-icon>arrow_upward</mat-icon>
                         </button>
                     }
-                    @if (element.changingRole) {
+                    @if (element.deleting) {
                         <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
                     } @else {
                         <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="deleteUser(element)">

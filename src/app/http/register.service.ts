@@ -5,6 +5,11 @@ import { AuthService } from '../core/services/auth.service';
 import { tap } from 'rxjs';
 import { LoginResponse } from './login/login.service';
 
+export interface Invitation {
+    email: string;
+    role: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -34,5 +39,13 @@ export class RegisterService {
             email,
             role,
         });
+    }
+
+    deleteInvitation(email: string) {
+        return this._httpClient.delete(`${backUrl}/invitations/${email}`);
+    }
+
+    getInvitations() {
+        return this._httpClient.get<Invitation[]>(`${backUrl}/invitations`);
     }
 }

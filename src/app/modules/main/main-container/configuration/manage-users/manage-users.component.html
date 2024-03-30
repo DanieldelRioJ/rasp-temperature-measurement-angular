@@ -1,26 +1,2 @@
-<div class="w-fit flex items-center gap-4 flex-wrap mb-4" [formGroup]="inviteForm">
-    <h1>Añadir nuevo usuario</h1>
-    <mat-form-field>
-        <mat-label>Email nuevo usuario</mat-label>
-        <input type="text" matInput formControlName="email">
-        <mat-error *appFormError="let error from 'email'">{{ error }}</mat-error>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Rol</mat-label>
-        <mat-select formControlName="role">
-            <mat-option value="user">Usuario</mat-option>
-            <mat-option value="admin">Admin</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <button mat-flat-button color="primary" [disabled]="inviteForm.invalid || loadingInvitation"
-            (click)="invite()">
-        @if (loadingInvitation) {
-            <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
-        } @else {
-            Invitar
-        }
-    </button>
-</div>
-<hr>
 <p class="text-2xl">Lista de usuarios</p>
 <app-manage-users-list class="w-72 block pt-4"></app-manage-users-list>

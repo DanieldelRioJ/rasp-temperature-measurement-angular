@@ -7,6 +7,7 @@ import { ManageUsersComponent } from './manage-users/manage-users.component';
 import { UserConfigurationComponent } from './user-configuration/user-configuration.component';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NgIf } from '@angular/common';
+import { ManageInvitationsComponent } from './manage-invitations/manage-invitations.component';
 
 @Component({
     selector: 'app-configuration',
@@ -19,6 +20,7 @@ import { NgIf } from '@angular/common';
         ManageUsersComponent,
         UserConfigurationComponent,
         NgIf,
+        ManageInvitationsComponent,
     ],
     templateUrl: './configuration.component.html',
 })
