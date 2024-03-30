@@ -19,6 +19,7 @@ import { FormErrorDirective } from '../../../shared/form-error/form-error.direct
 import { RegisterService } from '../../../http/register.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../../shared/notification/notification.service';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-register',
@@ -34,6 +35,7 @@ import { NotificationService } from '../../../shared/notification/notification.s
         ReactiveFormsModule,
         FormErrorDirective,
         MatError,
+        MatTooltip,
     ],
     templateUrl: './register.component.html',
 })

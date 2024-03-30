@@ -7,7 +7,7 @@
         <mat-error *appFormError="let error from 'email'">{{ error }}</mat-error>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field matTooltip="Token recibido por email con la invitación de un admin">
         <mat-label>Token</mat-label>
         <input type="token" matInput formControlName="token">
         <mat-error *appFormError="let error from 'token'">{{ error }}</mat-error>
