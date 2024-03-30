@@ -8,7 +8,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { RaspberryConfigurationService } from '../../../http/raspberry-configuration/raspberry-configuration.service';
 
 @Component({
@@ -23,6 +23,7 @@ import { RaspberryConfigurationService } from '../../../http/raspberry-configura
         MatLabel,
         MatButton,
         RouterOutlet,
+        RouterLink,
     ],
     templateUrl: './login-container.component.html',
 })
