@@ -13,13 +13,14 @@ export const authRequiredInterceptor: HttpInterceptorFn = (
     req: HttpRequest<unknown>,
     next: HttpHandlerFn,
 ) => {
+    const router = inject(Router);
+    const authService = inject(AuthService);
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
             if (error.status == 401) {
-                const router = inject(Router);
-                const authService = inject(AuthService);
                 authService.token = null;
-                router.navigate(['login']);
+                authService.user.set(null);
+                router.navigateByUrl('/login');
             }
             return throwError(() => error);
         }),

@@ -8,7 +8,7 @@ export const canActivateGuard: CanActivateFn = () => {
         return true;
     }
     const router = inject(Router);
-    router.navigate(['login']);
+    router.navigateByUrl('/login');
     return false;
 };
 
@@ -18,6 +18,6 @@ export const alreadyLogged: CanActivateFn = () => {
         return true;
     }
     const router = inject(Router);
-    router.navigate(['/']);
+    router.navigateByUrl('/');
     return false;
 };

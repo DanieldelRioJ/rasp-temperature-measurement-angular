@@ -37,7 +37,7 @@ export class ChartViewComponent implements AfterViewInit {
                 let unit: 'hour' | 'day' = 'hour';
                 if (
                     myData.length > 0 &&
-                    myData[myData.length - 1].date - myData[0].date > 80000
+                    myData[myData.length - 1].date - myData[0].date > 100000
                 ) {
                     unit = 'day';
                 }
